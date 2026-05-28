@@ -1,6 +1,6 @@
 # Kindle SmartHome Dashboard
 
-An interactive Home Assistant dashboard running on a jailbroken Kindle PW3 e-ink display. Touch buttons toggle lights, control shutters, open the intercom door — all with real-time state updates via WebSocket.
+An interactive Home Assistant dashboard running on a jailbroken Kindle e-ink display (tested on PW3 and adapted for Kindle Touch). Touch buttons toggle lights, control shutters, open the intercom door — all with real-time state updates via WebSocket.
 
 Forked from [1RandomDev/kindle-smarthome-dashboard](https://github.com/1RandomDev/kindle-smarthome-dashboard).
 
@@ -36,7 +36,7 @@ The Kindle PW3 uses an old WebKit browser with an outdated WebSocket implementat
 
 ## Prerequisites
 
-- **Kindle PW3** (or similar) — jailbroken with [WinterBreak](https://kindlemodding.org/jailbreaking/)
+- **Kindle PW3 / Kindle Touch** (or similar) — jailbroken with [WinterBreak](https://kindlemodding.org/jailbreaking/)
 - **KUAL** installed on the Kindle ([MobileRead guide](https://www.mobileread.com/forums/showthread.php?t=225030))
 - **Home Assistant** — with HAOS (for the add-on approach) or any install with API access
 - **WiFi** — Kindle must be on the same network as your HA server
@@ -116,6 +116,8 @@ If you're not using HAOS, you can run the proxy on any machine with Node.js:
 
 5. **Eject the Kindle**, connect to WiFi, and launch:
    **KUAL > SmartHome Display > Launch SmartHome Display**
+
+> On Kindle Touch, the launcher now auto-detects available browser binaries and falls back from `mesquite` to `browser`/`webkit` when needed.
 
 ### Step 3: Using the Dashboard
 

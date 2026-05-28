@@ -6,6 +6,22 @@
 APP_DIR="/mnt/us/extensions/smarthomedisplay"
 APP_ID="org.im1random.smarthomedisplay"
 
+detect_browser_command() {
+    if [ -x /usr/bin/mesquite ]; then
+        echo "/usr/bin/mesquite -l $APP_ID -c file://$APP_DIR/mesquite/"
+        return
+    fi
+    if [ -x /usr/bin/browser ]; then
+        echo "/usr/bin/browser -u file://$APP_DIR/mesquite/index.html"
+        return
+    fi
+    if [ -x /usr/bin/webkit ]; then
+        echo "/usr/bin/webkit -u file://$APP_DIR/mesquite/index.html"
+        return
+    fi
+    echo ""
+}
+
 if [ -d /etc/upstart ]; then
     export INIT_TYPE="upstart"
     if [ -f /etc/upstart/functions ]; then
@@ -108,6 +124,15 @@ else
     "$APP_DIR/bin/UtildSF"
 fi
 
+BROWSER_CMD="$(detect_browser_command)"
+if [ -z "$BROWSER_CMD" ]; then
+    eips 1 1 "No supported Kindle browser binary found"
+    sleep 3
+    start_system_gui
+    prevent_screensaver 0
+    exit 1
+fi
+
 # Register app
 sqlite3 "/var/local/appreg.db" <<EOF
 INSERT OR IGNORE INTO interfaces(interface) VALUES('application');
@@ -117,7 +142,7 @@ INSERT OR IGNORE INTO handlerIds(handlerId) VALUES('$APP_ID');
 INSERT OR REPLACE INTO properties(handlerId,name,value)
   VALUES('$APP_ID','lipcId','$APP_ID');
 INSERT OR REPLACE INTO properties(handlerId,name,value)
-  VALUES('$APP_ID','command','/usr/bin/mesquite -l $APP_ID -c file://$APP_DIR/mesquite/');
+    VALUES('$APP_ID','command','$BROWSER_CMD');
 INSERT OR REPLACE INTO properties(handlerId,name,value)
   VALUES('$APP_ID','supportedOrientation','U');
 EOF
@@ -152,8 +177,14 @@ script -f /dev/null -c "evtest /dev/input/event0" | while read line; do
         *"code 116 (Power), value 1"*)
             echo "Power button pressed"
             browserPid=$(gdbus call -y -d org.freedesktop.DBus -o / -m org.freedesktop.DBus.GetConnectionUnixProcessID "$APP_ID" | sed -E 's/.* ([0-9]+),.*/\1/')
+            if [ -z "$browserPid" ]; then
+                browserPid=$(pidof mesquite browser webkit 2>/dev/null | awk '{print $1}')
+            fi
             echo "Killing PID $browserPid"
-            kill $browserPid
+            if [ -n "$browserPid" ]; then
+                kill "$browserPid" 2>/dev/null
+            fi
+            killall mesquite browser webkit 2>/dev/null
 
             start_system_gui
             prevent_screensaver 0

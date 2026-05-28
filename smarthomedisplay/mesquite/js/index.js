@@ -30,6 +30,39 @@ function setScreenBrightness(val) {
 // Device features
 var nightMode = null, backlightTimer = null;
 var container = document.getElementsByClassName('container')[0];
+var isKindleTouch = false;
+
+function detectTouchClass() {
+    var model = '';
+    try {
+        if(window.kindle && kindle.device && kindle.device.model) {
+            model = ('' + kindle.device.model).toLowerCase();
+        }
+    } catch(e) {}
+
+    if(model.indexOf('touch') !== -1) {
+        return true;
+    }
+
+    var w = window.innerWidth || 0;
+    var h = window.innerHeight || 0;
+    if((w && h) && ((w <= 800 && h <= 600) || (w <= 600 && h <= 800))) {
+        return true;
+    }
+
+    return false;
+}
+
+isKindleTouch = detectTouchClass();
+if(isKindleTouch) {
+    var bodyClass = document.body.className || '';
+    if(bodyClass.indexOf('kindle-touch') === -1) {
+        document.body.className = bodyClass ? (bodyClass + ' kindle-touch') : 'kindle-touch';
+    }
+}
+
+var ENABLE_CHARTS = !isKindleTouch;
+
 if(window.kindle) {
     document.querySelector('.vertical-section.left').onclick = function() {
         if(nightMode || backlightTimer) return;
@@ -44,10 +77,10 @@ if(window.kindle) {
 // Close app button — proper shutdown: kill browser, restore UI, re-enable screensaver
 document.getElementById('closeApp').onclick = function() {
     if(window.kindle) {
-        // Kill mesquite first to prevent fullscreen freeze, then restore Kindle UI
+        // Shut down browser process and restore Kindle UI across firmware variants.
         kindle.messaging.sendStringMessage(
             'com.kindlemodding.utild', 'runCMD',
-            'kill $(gdbus call -y -d org.freedesktop.DBus -o / -m org.freedesktop.DBus.GetConnectionUnixProcessID org.im1random.smarthomedisplay | sed -E \'s/.* ([0-9]+),.*/\\1/\'); lipc-set-prop com.lab126.powerd preventScreenSaver 0; start lab126_gui'
+            'PID=$(gdbus call -y -d org.freedesktop.DBus -o / -m org.freedesktop.DBus.GetConnectionUnixProcessID org.im1random.smarthomedisplay 2>/dev/null | sed -E \'s/.* ([0-9]+),.*/\\1/\'); if [ -n "$PID" ]; then kill "$PID"; fi; killall mesquite browser webkit 2>/dev/null; lipc-set-prop com.lab126.powerd preventScreenSaver 0; start lab126_gui 2>/dev/null || /etc/init.d/framework start 2>/dev/null'
         );
     } else {
         window.close();
@@ -242,8 +275,8 @@ function createTempChart(canvasId) {
         }
     });
 }
-var indoorChart = createTempChart('indoorChart');
-var outdoorChart = createTempChart('outdoorChart');
+var indoorChart = ENABLE_CHARTS ? createTempChart('indoorChart') : null;
+var outdoorChart = ENABLE_CHARTS ? createTempChart('outdoorChart') : null;
 
 var TEMP_INDOOR_ENTITY = 'sensor.f730_r_1x230v_room_temperature_bt50';
 var TEMP_OUTDOOR_ENTITY = 'sensor.f730_r_1x230v_current_outd_temp_bt1';
@@ -298,9 +331,11 @@ function createSocket() {
                 entityId: TEMP_OUTDOOR_ENTITY
             }));
         }
-        fetchHistory();
-        // Refresh charts every 30 minutes
-        setInterval(fetchHistory, 1800000);
+        if(ENABLE_CHARTS) {
+            fetchHistory();
+            // Refresh charts every 30 minutes
+            setInterval(fetchHistory, 1800000);
+        }
     };
 
     ws.onmessage = function(event) {
@@ -373,10 +408,10 @@ function createSocket() {
                     }
                     chart.update();
                 }
-                if(msg.history[TEMP_INDOOR_ENTITY]) {
+                if(ENABLE_CHARTS && indoorChart && msg.history[TEMP_INDOOR_ENTITY]) {
                     fillChart(indoorChart, msg.history[TEMP_INDOOR_ENTITY]);
                 }
-                if(msg.history[TEMP_OUTDOOR_ENTITY]) {
+                if(ENABLE_CHARTS && outdoorChart && msg.history[TEMP_OUTDOOR_ENTITY]) {
                     fillChart(outdoorChart, msg.history[TEMP_OUTDOOR_ENTITY]);
                 }
                 break;

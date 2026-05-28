@@ -251,6 +251,102 @@ html, body {
     margin-right: 2px;
 }
 
+/* Kindle Touch / 800x600 compact mode */
+body.kindle-touch .container {
+    padding: 14px 10px 10px 10px;
+}
+body.kindle-touch .vertical-section.left {
+    width: 56%;
+    padding-right: 8px;
+}
+body.kindle-touch .vertical-section.right {
+    width: 44%;
+    padding-left: 8px;
+}
+body.kindle-touch .weatherWidget {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+}
+body.kindle-touch .weatherWidget .forecast {
+    width: 62px;
+    font-size: 13px;
+}
+body.kindle-touch .weatherWidget .forecast .img {
+    width: 32px;
+    height: 32px;
+}
+body.kindle-touch .weatherWidget .forecast .temp {
+    font-size: 15px;
+}
+body.kindle-touch .weatherWidget .forecast .temp-sm {
+    font-size: 12px;
+}
+body.kindle-touch .cardsWidget .card {
+    width: 125px;
+    height: 84px;
+    padding: 8px;
+    margin: 0 4px 6px 0;
+}
+body.kindle-touch .cardsWidget .card .title {
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+body.kindle-touch .cardsWidget .card .icon,
+body.kindle-touch .cardsWidget .card .icon img {
+    width: 24px;
+    height: 24px;
+}
+body.kindle-touch .cardsWidget .card .value {
+    font-size: 19px;
+}
+body.kindle-touch .cardsWidget .card .val-unit {
+    font-size: 12px;
+}
+body.kindle-touch .clockWidget {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+}
+body.kindle-touch .clockWidget .time {
+    font-size: 46px;
+    letter-spacing: -1px;
+}
+body.kindle-touch .clockWidget .date {
+    font-size: 14px;
+}
+body.kindle-touch .clockWidget .battery {
+    font-size: 11px;
+}
+body.kindle-touch .buttonsWidget .button {
+    width: 108px;
+    padding: 7px 4px;
+    margin: 0 2px 5px 2px;
+}
+body.kindle-touch .buttonsWidget .button .icon,
+body.kindle-touch .buttonsWidget .button .icon img {
+    width: 28px;
+    height: 28px;
+}
+body.kindle-touch .buttonsWidget .button .title {
+    width: auto;
+    font-size: 12px;
+}
+body.kindle-touch .lampControlBtn {
+    font-size: 13px;
+    padding: 8px 0;
+}
+body.kindle-touch .shuttersWidget .shutter-row,
+body.kindle-touch .intercomWidget .intercom-row {
+    padding: 7px 8px;
+    margin-bottom: 4px;
+}
+body.kindle-touch .shutter-name,
+body.kindle-touch .intercom-name {
+    font-size: 14px;
+}
+body.kindle-touch .chartWidget {
+    display: none;
+}
+
 /* Notifications */
 .notificationWidget {
     font-size: 20px;

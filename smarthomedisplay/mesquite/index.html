@@ -7,7 +7,11 @@
     <title>Kindle Dashboard</title>
     <script>
         if(window.kindle) {
-            kindle.device.setOrientation('landscapeRight');
+            try {
+                if(kindle.device && kindle.device.setOrientation) {
+                    kindle.device.setOrientation('landscapeRight');
+                }
+            } catch(e) {}
         }
     </script>
 </head>
