@@ -51,7 +51,8 @@ Install it through the Home Assistant **Add-on Store repository list** (this is 
 1. **Add the repository URL** in Home Assistant:
     - Go to **Settings > Add-ons > Add-on Store**
     - Click the **three dots** (top right) > **Repositories**
-    - Add your published `ha-addon` repository URL and click **Add**
+        - Add this repository URL and click **Add**:
+            `https://github.com/hfbauman/kindle-smarthome-dashboard`
 
 2. **Install the add-on** from the new repository:
     - In **Add-on Store**, click **Check for updates**
@@ -70,7 +71,7 @@ Install it through the Home Assistant **Add-on Store repository list** (this is 
 
 1. **Copy the add-on to your HA server** via SSH:
     ```bash
-    scp -r ha-addon/kindle-dashboard-proxy root@YOUR_HA_IP:/addons/kindle-dashboard-proxy
+    scp -r kindle-dashboard-proxy root@YOUR_HA_IP:/addons/kindle-dashboard-proxy
     ```
     > If SSH isn't enabled, install the **Terminal & SSH** add-on in HA first (Settings > Add-ons > search "Terminal & SSH"), add your SSH public key in its Configuration tab, set port 22, and start it.
 
