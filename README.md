@@ -46,18 +46,17 @@ The Kindle PW3 uses an old WebKit browser with an outdated WebSocket implementat
 ### Step 1: Install the WebSocket Proxy on Home Assistant
 
 The proxy runs as a Home Assistant add-on — it starts automatically with HA and requires no manual token configuration.
+Install it through the Home Assistant **Add-on Store repository list** (this is separate from HACS).
 
-1. **Copy the add-on to your HA server** via SSH:
-   ```bash
-   scp -r ha-addon root@YOUR_HA_IP:/addons/kindle-dashboard-proxy
-   ```
-   > If SSH isn't enabled, install the **Terminal & SSH** add-on in HA first (Settings > Apps > search "Terminal & SSH"), add your SSH public key in its Configuration tab, set port 22, and start it.
+1. **Add the repository URL** in Home Assistant:
+    - Go to **Settings > Add-ons > Add-on Store**
+    - Click the **three dots** (top right) > **Repositories**
+    - Add your published `ha-addon` repository URL and click **Add**
 
-2. **Install the add-on** in HA:
-   - Go to **Settings > Apps > App Store**
-   - Click the **three dots** (top right) > **Check for updates**
-   - Scroll to **Local apps** — you should see **"Kindle Dashboard Proxy"**
-   - Click it > **Install** > **Start**
+2. **Install the add-on** from the new repository:
+    - In **Add-on Store**, click **Check for updates**
+    - Open **Kindle Dashboard Proxy**
+    - Click **Install** > **Start**
 
 3. **Verify** in the add-on's **Log** tab — you should see:
    ```
@@ -66,6 +65,18 @@ The proxy runs as a Home Assistant add-on — it starts automatically with HA an
    ```
 
 > **How it works:** The add-on uses Home Assistant's Supervisor API token (auto-injected) to authenticate with HA. No long-lived access token needed.
+
+#### Alternative: Install as a Local Add-on Folder
+
+1. **Copy the add-on to your HA server** via SSH:
+    ```bash
+    scp -r ha-addon/kindle-dashboard-proxy root@YOUR_HA_IP:/addons/kindle-dashboard-proxy
+    ```
+    > If SSH isn't enabled, install the **Terminal & SSH** add-on in HA first (Settings > Add-ons > search "Terminal & SSH"), add your SSH public key in its Configuration tab, set port 22, and start it.
+
+2. **Refresh the add-on store**:
+    - Go to **Settings > Add-ons > Add-on Store**
+    - Click the **three dots** > **Check for updates**
 
 #### Alternative: Run Proxy Manually
 
